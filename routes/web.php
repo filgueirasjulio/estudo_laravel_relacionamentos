@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\{
     User,
     Course,
-    Module
+    Module,
+    Permission
 };
 
 Route::get('/one-to-one', function () {
@@ -55,11 +56,42 @@ Route::get('/one-to-many', function () {
     'video' => 'one-to-many.mp4'
 ]);
 
-   //dd($course->modules()->get());
-   //dd($module->lessons()->get());
+   dump($course->modules()->get());
+   dump($module->lessons()->get());
 });
 
+Route::get('/many-to-many', function () {
+    $user = User::with('permissions')->find(1);
 
+    $permission = Permission::create([
+        'name' => 'Admin'
+    ]);
+
+    $permission_2 = Permission::create([
+        'name' => 'Ceo'
+    ]);
+
+    $user = User::Find(1);
+    
+    //$user->permissions()->save($permission);
+    //$user->permissions()->sync([1]); //deleta todas as permissões que não tenham o id 1.
+     //$user->permissions()->attach([1, 2]); //anexa permissões ao usuário
+     //$user->permisisons()->detach([1]); //desanexa permissões
+     
+    $user->permissions()->saveMany([
+        $permission,
+        $permission_2
+    ]);
+
+    $user->permissions()->attach([
+        1 => ['active' => false],
+        2 => ['active' => false]
+    ]);
+
+   foreach($user->permissions as $permission) {
+       echo "{$permission->name} - {$permission->pivot->active} <br>";
+   }
+});
 
 Route::get('/', function () {
     return view('welcome');
