@@ -6,7 +6,8 @@ use App\Models\{
     User,
     Course,
     Module,
-    Permission
+    Permission,
+    Image
 };
 
 Route::get('/one-to-one', function () {
@@ -91,6 +92,16 @@ Route::get('/many-to-many', function () {
    foreach($user->permissions as $permission) {
        echo "{$permission->name} - {$permission->pivot->active} <br>";
    }
+});
+
+Route::get('/one-to-one-polymorphic', function() {
+    $user = User::first();
+
+    $user->image()->save(
+        new Image(['path' => 'path/nome-image.png'])
+    );
+
+    dd($user->image->path);
 });
 
 Route::get('/', function () {
