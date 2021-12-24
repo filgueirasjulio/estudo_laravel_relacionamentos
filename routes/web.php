@@ -7,7 +7,8 @@ use App\Models\{
     Course,
     Module,
     Permission,
-    Image
+    Image,
+    Comment
 };
 
 Route::get('/one-to-one', function () {
@@ -102,6 +103,31 @@ Route::get('/one-to-one-polymorphic', function() {
     );
 
     dd($user->image->path);
+});
+
+
+Route::get('/one-to-many-polymorphic', function() {
+    $course = Course::create([
+        'name' => 'cruso teste',
+        'available' => true
+    ]);
+
+    $course = Course::first();
+
+    $course->comments()->create([
+        'subject' => 'Novo comentário',
+        'content' => 'Apenas um comentário'
+    ]);
+
+    $course->comments()->create([
+        'subject' => 'Novo comentário (2)',
+        'content' => 'Apenas um comentário (2)'
+    ]);
+
+    //dd($course->comments);
+
+    $comment = Comment::find(1);
+    //dd($comment, $comment->commentable);
 });
 
 Route::get('/', function () {
