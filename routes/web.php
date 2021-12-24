@@ -8,7 +8,8 @@ use App\Models\{
     Module,
     Permission,
     Image,
-    Comment
+    Comment,
+    Tag
 };
 
 Route::get('/one-to-one', function () {
@@ -128,6 +129,34 @@ Route::get('/one-to-many-polymorphic', function() {
 
     $comment = Comment::find(1);
     //dd($comment, $comment->commentable);
+});
+
+Route::get('/many-to-many-polymorphic', function() {
+    $user = User::first();
+
+    Tag::create(['name' => 'tag1', 'color' => 'blue']);
+    Tag::create(['name' => 'tag2', 'color' => 'red']);
+    Tag::create(['name' => 'tag3', 'color' => 'green']);
+
+    $user->tags()->attach(1);
+    $user->tags()->attach(2);
+    $user->tags()->attach(3);
+
+    $course = Course::create([
+        'name' => 'cruso teste',
+        'available' => true
+    ]);
+
+    $course = Course::first();
+
+    $course->tags()->attach(1);
+    $course->tags()->attach(2);
+    $course->tags()->attach(3);
+
+    //dd($user->tags, $course->tags);
+
+    $tag = Tag::find(1);
+    dd($tag->users, $tag->courses);
 });
 
 Route::get('/', function () {
